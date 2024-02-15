@@ -190,7 +190,6 @@ public class GetEmailParametersOA extends AbstractOutputAction {
     protected List<IOMParameter> getParameters() {
         List<IOMParameter> parameters = new ArrayList<>();
         parameters.add(new IOMParameter(INPUT, "Sorgulama yapılan"));
-        parameters.add(new IOMParameter("ID","Lütfen id girimniz."));
         return parameters;
     }
 
