@@ -93,7 +93,7 @@ public class GetEmailParametersOA extends AbstractOutputAction {
         }
     }
 
-    public int execute(OutputActionContext outputActionContext)  {
+    public int execute(OutputActionContext outputActionContext) {
         String ACTOR_ID = outputActionContext.getActorId();
         String input = (String) outputActionContext.getParameter(INPUT);
         try {
@@ -116,8 +116,11 @@ public class GetEmailParametersOA extends AbstractOutputAction {
             HttpResponse httpResponse = defaultHttpClient.execute((HttpUriRequest) httpPost);
             String response = EntityUtils.toString(httpResponse.getEntity());
             LOGGER.info("GetEmailParametersOA :ACTOR_ID : " + ACTOR_ID + " Response for input : " + input + " : " + response);
-            if (response.isEmpty()) {
 
+            parseResponse(response);
+            EntityUtils.consume(httpResponse.getEntity());
+
+            if (!response.isEmpty()) {
                 outputActionContext.getReturnMap().put(ID, this.idValue);
                 outputActionContext.getReturnMap().put(EMAIL_TYPE, this.emailTypeValue);
                 outputActionContext.getReturnMap().put(EMAIL_ADDRESS, this.emailAdressValue);
@@ -127,25 +130,14 @@ public class GetEmailParametersOA extends AbstractOutputAction {
                 outputActionContext.getReturnMap().put(CONTACT_EMAIL, this.contactEmailValue);
                 outputActionContext.getReturnMap().put(CONFIRMED_EMAIL, this.confirmedEmailValue);
                 outputActionContext.getReturnMap().put(EMAIL_PERMITTED, this.emailPermittedValue);
-
                 return 0;
             }
-            parseResponse(response);
-            EntityUtils.consume(httpResponse.getEntity());
+
         } catch (Exception e) {
             LOGGER.error("An unexpected error occured. " + e);
             e.printStackTrace();
         }
-        outputActionContext.getReturnMap().put(ID, this.idValue);
-        outputActionContext.getReturnMap().put(EMAIL_TYPE, this.emailTypeValue);
-        outputActionContext.getReturnMap().put(EMAIL_ADDRESS, this.emailAdressValue);
-        outputActionContext.getReturnMap().put(SEND_EKSTRE, this.sendEkstreValue);
-        outputActionContext.getReturnMap().put(SEND_DAILY_EKSTRE, this.sendDailyEkstreValue);
-        outputActionContext.getReturnMap().put(INTERNET_BANKING_FLAG, this.internetBankingFlagValue);
-        outputActionContext.getReturnMap().put(CONTACT_EMAIL, this.contactEmailValue);
-        outputActionContext.getReturnMap().put(CONFIRMED_EMAIL, this.confirmedEmailValue);
-        outputActionContext.getReturnMap().put(EMAIL_PERMITTED, this.emailPermittedValue);
-        return 0;
+        return -1;
     }
 
     private void parseResponse(String response) {
@@ -178,7 +170,6 @@ public class GetEmailParametersOA extends AbstractOutputAction {
                 this.contactEmailValue = contactEmail;
                 this.confirmedEmailValue = confirmedEmail;
                 this.emailPermittedValue = emailPermitted;
-
 
             }
         } catch (Exception e) {
